@@ -1,13 +1,16 @@
 part of 'shared.dart';
 
 const double defaultMargin = 24.0;
+Color primaryColor = "33BA77".toColor();
 Color mainColor = "4164FE".toColor();
-Color greyColor = "8D92A3".toColor();
+Color greyColor = "E8F7F0".toColor();
 Color blackColor = "020202".toColor();
 Color darkBlue = "1D2A64".toColor();
 Color lightGrey = "F6F7F8".toColor();
 TextStyle titleStyle = GoogleFonts.poppins()
     .copyWith(color: blackColor, fontSize: 22, fontWeight: FontWeight.w500);
+TextStyle whiteTextStyle = GoogleFonts.poppins()
+    .copyWith(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w500);
 TextStyle greyFontStyle = GoogleFonts.poppins().copyWith(color: greyColor);
 TextStyle labelStyle = GoogleFonts.poppins()
     .copyWith(color: blackColor, fontSize: 16, fontWeight: FontWeight.w400);
