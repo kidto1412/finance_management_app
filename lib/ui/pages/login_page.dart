@@ -66,6 +66,27 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Container(
+              padding: EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Text('Do you already have an account?'),
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () {
+                      Get.to(RegisterPage());
+                    },
+                    child: Text('Click here'),
+                  )
+                ],
+              ),
+            ),
+            Container(
               width: double.infinity,
               margin: EdgeInsets.only(top: 18.0, bottom: 10.0),
               padding: EdgeInsets.symmetric(horizontal: 10.0),

@@ -150,6 +150,11 @@ class _RegisterPageState extends State<RegisterPage> {
             Container(
               padding: EdgeInsets.all(10.0),
               child: TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CurrencyInputFormatter(),
+                ],
                 controller: balance,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -190,23 +195,37 @@ class _RegisterPageState extends State<RegisterPage> {
                       backgroundColor: Colors.green,
                       textStyle: labelButtonStyle1),
                   onPressed: () async {
-                    print(dropdownValue);
-                    Get.snackbar("Hi", "I'm modern snackbar",
-                        backgroundColor: Colors.green, colorText: Colors.white);
+                    if (userProvider.isLoading == true) {
+                      showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => Dialog(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      const Text('Loading'),
+                                      const SizedBox(height: 15),
+                                      CircularProgressIndicator(
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ));
+                    }
+                    String newBalance = unformatBalance(balance.text);
                     await Provider.of<UserProvider>(context, listen: false)
-                        .register(
-                            name.text,
-                            email.text,
-                            username.text,
-                            password.text,
-                            dropdownValue,
-                            balance.text.toInt()!);
+                        .register(name.text, email.text, username.text,
+                            password.text, dropdownValue, newBalance.toInt()!);
 
                     if (userProvider.resultRegister!.value['code'] == "00" &&
                         userProvider.resultAddBakn!.value['code'] == "00") {
                       Get.snackbar('Success', 'User Registered Successfully',
                           backgroundColor: Colors.green,
                           colorText: Colors.white);
+                      Get.to(LoginPage());
                     } else {
                       Get.snackbar('Failed', 'User Registered Successfully',
                           backgroundColor: Colors.red, colorText: Colors.white);
@@ -220,13 +239,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 )),
             userProvider.isLoading == true
-                ? Container(
-                    margin: EdgeInsets.all(10.0),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.green,
+                ? Stack(
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.all(10.0),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Colors.green,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   )
                 : Container()
           ],

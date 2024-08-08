@@ -1,16 +1,16 @@
 import 'package:finance_management/providers/user_provider.dart';
 import 'package:finance_management/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(GetMaterialApp(
-    home: MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider()),
-      ],
-      child: MyApp(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+    ],
+    child: GetMaterialApp(
+      home: MyApp(),
     ),
   ));
 }
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: RegisterPage(),
+      home: LoginPage(),
     );
   }
 }

@@ -46,7 +46,7 @@ class UserProvider extends ChangeNotifier {
       _resultRegister = ApiReturnValue(message: e.toString(), value: null);
       _resultAddBank = ApiReturnValue(message: e.toString(), value: null);
     }
-    _isLoading = false;
+    // _isLoading = false;
     notifyListeners();
 
     // This call tells the widgets that are listening to this model to rebuild.
