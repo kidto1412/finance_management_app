@@ -54,7 +54,8 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             Container(
               padding: EdgeInsets.all(10.0),
-              child: TextField(
+              child: TextFormField(
+                maxLines: 1,
                 controller: name,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
