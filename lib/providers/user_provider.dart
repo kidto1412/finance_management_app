@@ -52,8 +52,34 @@ class UserProvider extends ChangeNotifier {
     // This call tells the widgets that are listening to this model to rebuild.
   }
 
-  /// Removes all items from the cart.
-  void login() {
+  ApiReturnValue? _userLoggedin;
+  ApiReturnValue? get userLoggedIn => _userLoggedin;
+
+  Future<void> login(
+    String username,
+    String password,
+  ) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      ApiReturnValue response = await AuthService.login(username, password);
+      if (response.value['code'] == '00') {
+        _userId = response.value['userId'];
+        _userLoggedin = response;
+        print(' response form provider ${response}');
+        _isLoading = false;
+      } else {
+        _userLoggedin =
+            ApiReturnValue(message: "User registration failed", value: null);
+        _isLoading = false;
+      }
+    } catch (e) {
+      _userId = null;
+      _userLoggedin =
+          ApiReturnValue(message: "User registration failed", value: null);
+      _isLoading = false;
+    }
+
     notifyListeners();
   }
 

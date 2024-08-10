@@ -3,6 +3,11 @@ String? validator(String? value, String type) {
     return 'This field is required';
   }
   switch (type) {
+    case 'name':
+      if (value.length <= 2) {
+        return 'Username should be at least 3 characters long';
+      }
+      break;
     case 'username':
       if (value.length != value.replaceAll(' ', '').length) {
         return 'Username must not contain any spaces';

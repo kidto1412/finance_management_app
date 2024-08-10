@@ -8,8 +8,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
@@ -43,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               padding: EdgeInsets.all(10.0),
               child: TextField(
+                controller: username,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Enter a search term',
@@ -59,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               padding: EdgeInsets.all(10.0),
               child: TextField(
+                controller: password,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Password',
@@ -97,13 +102,29 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(5.0)),
                     backgroundColor: Colors.green,
                     textStyle: labelButtonStyle1),
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    await Provider.of<UserProvider>(context, listen: false)
+                        .login(username.text, password.text);
+                    if (userProvider.userLoggedIn!.value['code'] == '00') {
+                      Get.snackbar('Success', "Login Successfully",
+                          backgroundColor: Colors.green);
+                      Get.to(HomePage());
+                    } else {
+                      Get.snackbar('false', "Login failed",
+                          backgroundColor: Colors.red);
+                    }
+                  } catch (e) {}
+                },
                 child: Text(
                   'Login',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-            )
+            ),
+            userProvider.isLoading == true
+                ? CircularProgressIndicator()
+                : SizedBox()
           ],
         ),
       )),
