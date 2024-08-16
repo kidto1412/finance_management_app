@@ -64,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
               padding: EdgeInsets.all(10.0),
               child: TextField(
                 controller: password,
+                obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Password',
@@ -109,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (userProvider.userLoggedIn!.value['code'] == '00') {
                       Get.snackbar('Success', "Login Successfully",
                           backgroundColor: Colors.green);
-                      Get.to(HomePage());
+                      Get.to(MainPage());
                     } else {
                       Get.snackbar('false', "Login failed",
                           backgroundColor: Colors.red);

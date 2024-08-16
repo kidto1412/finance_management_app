@@ -1,6 +1,7 @@
 import 'package:finance_management/models/models.dart';
 import 'package:finance_management/services/services.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 
 class UserProvider extends ChangeNotifier {
   // AuthService _authService = AuthService();
@@ -14,8 +15,8 @@ class UserProvider extends ChangeNotifier {
   ApiReturnValue? get resultRegister => _resultRegister;
   ApiReturnValue? get resultAddBakn => _resultAddBank;
 
-  Future<void> register(String name, String email, String username,
-      String password, String bankName, int totalBalance) async {
+  Future<void> register(
+      String name, String email, String username, String password) async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -24,18 +25,7 @@ class UserProvider extends ChangeNotifier {
       if (response.value['code'] == '00') {
         _userId = response.value['data'];
         _resultRegister = response;
-
-        ApiReturnValue<dynamic> responseBank =
-            await BankService.addBankUser(bankName, totalBalance, _userId!);
-        if (responseBank.value['code'] == "00") {
-          _isLoading = false;
-          _resultAddBank = responseBank;
-        } else {
-          _isLoading = false;
-          _resultAddBank =
-              ApiReturnValue(message: "Bank registration failed", value: null);
-        }
-        print(responseBank);
+        _isLoading = false;
       } else {
         _resultRegister =
             ApiReturnValue(message: "User registration failed", value: null);
@@ -65,6 +55,7 @@ class UserProvider extends ChangeNotifier {
       ApiReturnValue response = await AuthService.login(username, password);
       if (response.value['code'] == '00') {
         _userId = response.value['userId'];
+        localStorage.setItem("userId", _userId.toString());
         _userLoggedin = response;
         print(' response form provider ${response}');
         _isLoading = false;

@@ -4,26 +4,73 @@ import 'package:flutter/material.dart';
 
 class BankProvider extends ChangeNotifier {
   // AuthService _authService = AuthService();
-  int? _userId;
+  List<Bank>? _banks;
   bool _isLoading = false;
+  List<Bank>? get getAll => _banks;
+
+  List<Bank>? _userBanks;
+  List<Bank>? get userBanks => _userBanks;
+
   bool get isLoading => _isLoading;
-  int? get userId => _userId;
-  Future<void> addBankUser(
-      String name, String username, String email, String password) async {
+  // int? get userId => _userId;
+
+  Future<void> addBankUser(int bankId, int userId, int totalBalance) async {
     _isLoading = true;
     notifyListeners();
     try {
       ApiReturnValue result =
-          await AuthService.register(name, username, email, password);
-      print('result ${result}');
-      _userId = result.value['data'];
+          await BankService.addBankUser(bankId, userId, totalBalance);
+      print('result ${result.value}');
+      _banks = result.value;
+      // _userId = result.value['data'];
     } catch (e) {
-      _userId = null;
+      _banks = [];
     }
     _isLoading = false;
     notifyListeners();
+  }
 
-    // This call tells the widgets that are listening to this model to rebuild.
+  Future<void> GetALlBank() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      ApiReturnValue result = await BankService.getAllBank();
+      print('result ${result.value}');
+
+      _banks = result.value;
+      Map<int, String> bankMap = {
+        for (var bank in result.value) bank.bankId!: bank.bankName!
+      };
+      print(bankMap);
+      _isLoading = false;
+      // _userId = result.value['data'];
+    } catch (e) {
+      _isLoading = false;
+      _banks = [];
+      // _userId = null;
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> GetUserBank(int userId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      ApiReturnValue result = await BankService.getUserBank(userId);
+      print('result ${result.value}');
+
+      _userBanks = result.value;
+
+      _isLoading = false;
+      // _userId = result.value['data'];
+    } catch (e) {
+      _isLoading = false;
+      _userBanks = [];
+      // _userId = null;
+    }
+    _isLoading = false;
+    notifyListeners();
   }
 
   /// Removes all items from the cart.

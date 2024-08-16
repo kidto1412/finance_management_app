@@ -15,7 +15,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController name = TextEditingController();
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
-  final TextEditingController balance = TextEditingController();
 
   @override
   void dispose() {
@@ -23,7 +22,6 @@ class _RegisterPageState extends State<RegisterPage> {
     name.dispose();
     email.dispose();
     password.dispose();
-    balance.dispose();
     super.dispose();
   }
 
@@ -126,6 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: TextFormField(
+                  obscureText: true,
                   validator: (String? value) {
                     validator(value, 'username');
                   },
@@ -133,55 +132,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Password',
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  'Bank',
-                  style: labelStyle,
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: DropdownMenu<String>(
-                  initialSelection: banks.first,
-                  onSelected: (String? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                  },
-                  dropdownMenuEntries:
-                      banks.map<DropdownMenuEntry<String>>((String value) {
-                    return DropdownMenuEntry<String>(
-                        value: value, label: value);
-                  }).toList(),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  'Balance',
-                  style: labelStyle,
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: TextFormField(
-                  validator: (String? value) {
-                    validator(value, '');
-                  },
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    CurrencyInputFormatter(),
-                  ],
-                  controller: balance,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Balance',
                   ),
                 ),
               ),
@@ -240,15 +190,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ));
                         }
-                        String newBalance = unformatBalance(balance.text);
+
                         await Provider.of<UserProvider>(context, listen: false)
-                            .register(
-                                name.text,
-                                email.text,
-                                username.text,
-                                password.text,
-                                dropdownValue,
-                                newBalance.toInt()!);
+                            .register(name.text, email.text, username.text,
+                                password.text);
 
                         if (userProvider.resultRegister!.value['code'] ==
                                 "00" &&
