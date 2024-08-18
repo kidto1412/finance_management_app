@@ -54,7 +54,8 @@ class UserProvider extends ChangeNotifier {
     try {
       ApiReturnValue response = await AuthService.login(username, password);
       if (response.value['code'] == '00') {
-        _userId = response.value['userId'];
+        print('userId ${response.value}');
+        _userId = response.value['data'];
         localStorage.setItem("userId", _userId.toString());
         _userLoggedin = response;
         print(' response form provider ${response}');

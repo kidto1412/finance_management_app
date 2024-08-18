@@ -3,10 +3,13 @@ part of 'widgets.dart';
 class CardListBank extends StatelessWidget {
   String? bankName;
   int? totalBalance;
-  CardListBank({this.bankName, this.totalBalance});
+  Function? onTap;
+  CardListBank({this.bankName, this.totalBalance, this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    final formattedBalance = formatRupiah(totalBalance!.toInt());
+
     return Container(
       margin: EdgeInsets.only(left: 10, right: 10, top: 10.0),
       child: Card(
@@ -18,12 +21,14 @@ class CardListBank extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('asda'),
-                  Text('asda'),
+                  Text(bankName ?? ''),
+                  Text(formattedBalance.toString()),
                 ],
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  onTap;
+                },
                 icon: Icon(Icons.edit_outlined),
                 color: primaryColor,
               )

@@ -54,6 +54,7 @@ class BankProvider extends ChangeNotifier {
   }
 
   Future<void> GetUserBank(int userId) async {
+    print(userId);
     _isLoading = true;
     notifyListeners();
     try {
@@ -61,6 +62,7 @@ class BankProvider extends ChangeNotifier {
       print('result ${result.value}');
 
       _userBanks = result.value;
+      print(userBanks);
 
       _isLoading = false;
       // _userId = result.value['data'];

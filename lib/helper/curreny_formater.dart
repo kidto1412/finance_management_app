@@ -7,6 +7,10 @@ final NumberFormat currencyFormatter = NumberFormat.currency(
   symbol: 'Rp. ',
   decimalDigits: 0,
 );
+String formatRupiah(int amount) {
+  // Format the amount as Rupiah
+  return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ').format(amount);
+}
 
 class CurrencyInputFormatter extends TextInputFormatter {
   @override

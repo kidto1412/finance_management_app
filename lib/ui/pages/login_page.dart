@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             userProvider.isLoading == true
-                ? CircularProgressIndicator()
+                ? Center(child: CircularProgressIndicator())
                 : SizedBox()
           ],
         ),

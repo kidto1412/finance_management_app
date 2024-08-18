@@ -11,6 +11,17 @@ class _AccountPageState extends State<AccountPage> {
   final TextEditingController balance = TextEditingController();
   final TextEditingController title = TextEditingController();
   int? _selectedBankId;
+  int userId = localStorage.getItem("userId")!.toInt() ?? 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<BankProvider>(context, listen: false).GetUserBank(userId);
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +36,20 @@ class _AccountPageState extends State<AccountPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              userBanks.isEmpty ? NotfoundCard() : CardListBank(),
+              userBanks.isEmpty
+                  ? NotfoundCard()
+                  : Expanded(
+                      child: ListView.builder(
+                        itemCount: userBanks.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final Bank bank = userBanks[index];
+                          return CardListBank(
+                            bankName: bank.bankName,
+                            totalBalance: bank.totalBalance,
+                          );
+                        },
+                      ),
+                    ),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.all(16.0),
