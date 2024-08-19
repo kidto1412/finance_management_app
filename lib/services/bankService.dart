@@ -42,16 +42,24 @@ class BankService {
   }
 
   static Future<ApiReturnValue> addBankUser(
-      int bankId, int totalBalance, int userId) async {
+      int userId, int bankId, int totalBalance) async {
+    print('bankId ${bankId}');
+    print('userId ${userId}');
+    print('totalBalance ${totalBalance}');
     try {
       var response = await dio.post('bank/add-bank-user', data: {
         "bankId": bankId,
         "totalBalance": totalBalance,
         "userId": userId
       });
-      if (response.data['code'] == '00') {
-        return ApiReturnValue(
-            message: response.data['message'], value: response.data);
+
+      if (response.statusCode == 200) {
+        if (response.data['code'] == '00') {
+          return ApiReturnValue(
+              message: response.data['message'], value: response.data);
+        } else {
+          return ApiReturnValue(message: 'Failed', value: response.data);
+        }
       } else {
         return ApiReturnValue(message: 'Failed', value: response.data);
       }

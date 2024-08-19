@@ -12,21 +12,35 @@ class BankProvider extends ChangeNotifier {
   List<Bank>? get userBanks => _userBanks;
 
   bool get isLoading => _isLoading;
+
+  bool? _addUserBankLoading;
+  bool? get addUserBankLoading => _addUserBankLoading;
+
+  ApiReturnValue? _resultAdd;
+  ApiReturnValue? get resultAdd => _resultAdd;
   // int? get userId => _userId;
 
-  Future<void> addBankUser(int bankId, int userId, int totalBalance) async {
-    _isLoading = true;
+  Future<void> addBankUser(int userId, int bankId, int totalBalance) async {
+    _addUserBankLoading = true;
     notifyListeners();
     try {
       ApiReturnValue result =
-          await BankService.addBankUser(bankId, userId, totalBalance);
+          await BankService.addBankUser(userId, bankId, totalBalance);
       print('result ${result.value}');
-      _banks = result.value;
+      if (result.value['code'] == "00") {
+        _resultAdd = result;
+        _addUserBankLoading = false;
+      } else {
+        _resultAdd = result.value;
+        _addUserBankLoading = false;
+      }
+
       // _userId = result.value['data'];
     } catch (e) {
-      _banks = [];
+      _resultAdd = null;
+      _addUserBankLoading = false;
     }
-    _isLoading = false;
+    _addUserBankLoading = false;
     notifyListeners();
   }
 
@@ -35,13 +49,9 @@ class BankProvider extends ChangeNotifier {
     notifyListeners();
     try {
       ApiReturnValue result = await BankService.getAllBank();
-      print('result ${result.value}');
 
-      _banks = result.value;
-      Map<int, String> bankMap = {
-        for (var bank in result.value) bank.bankId!: bank.bankName!
-      };
-      print(bankMap);
+      _banks = await result.value;
+
       _isLoading = false;
       // _userId = result.value['data'];
     } catch (e) {
@@ -49,7 +59,7 @@ class BankProvider extends ChangeNotifier {
       _banks = [];
       // _userId = null;
     }
-    _isLoading = false;
+
     notifyListeners();
   }
 
