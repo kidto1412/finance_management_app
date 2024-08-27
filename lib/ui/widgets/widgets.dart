@@ -5,3 +5,4 @@ import 'package:flutter/material.dart';
 part 'custom_bottom_bar.dart';
 part 'card_notfound.dart';
 part 'card_list_bank.dart';
+part 'transaction_card.dart';

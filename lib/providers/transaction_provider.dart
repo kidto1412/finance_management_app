@@ -13,7 +13,7 @@ class TransactionProvider extends ChangeNotifier {
   bool? get loadTransaction => _loadTransaction;
 
   List<Transaction>? _transactions;
-  List<Transaction>? get transaction => _transactions;
+  List<Transaction>? get transactions => _transactions;
 
   Future<void> addTransaction(String title, String date, int userId, int bankId,
       int amount, int categoryId, String type) async {
@@ -42,19 +42,21 @@ class TransactionProvider extends ChangeNotifier {
   }
 
   Future<void> GetTransactionUser(int userId) async {
+    notifyListeners();
     _loadTransaction = true;
 
     try {
       ApiReturnValue result =
           await TransactionService.getTransactionUser(userId);
       if (result.value['code'] == '00') {
-        print('result ${result.value['data']}');
         var data = result.value['data'];
-        print('data ${data}');
-        // List<Transaction> transaction =
-        //     data.map((e) => Transaction.fromJson(e)).toList();
 
-        _transactions = transaction;
+        List<Transaction> transactions = await (data as Iterable)
+            .map((e) => Transaction.fromJson(e))
+            .toList();
+        print('transactions ${transactions}');
+        _transactions = transactions;
+        print('value ${_transactions}');
         _loadTransaction = false;
       } else {
         _transactions = [];
@@ -64,5 +66,7 @@ class TransactionProvider extends ChangeNotifier {
       _transactions = [];
       _loadTransaction = false;
     }
+    _loadTransaction = false;
+    notifyListeners();
   }
 }

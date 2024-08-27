@@ -1,7 +1,7 @@
 part of 'models.dart';
 
 class Transaction extends Equatable {
-  final int? id;
+  final String? id;
   final String? title;
   final String? date;
   final int? userId;
@@ -11,8 +11,8 @@ class Transaction extends Equatable {
   final String? categoryName;
   final int? amount;
   final String? type;
-  final String? createdAt;
-  final String? updatedAt;
+  // final String? createdAt;
+  // final String? updatedAt;
   Transaction({
     this.id,
     this.title,
@@ -24,8 +24,8 @@ class Transaction extends Equatable {
     this.categoryName,
     this.amount,
     this.type,
-    this.createdAt,
-    this.updatedAt,
+    // this.createdAt,
+    // this.updatedAt,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> data) => Transaction(
@@ -39,14 +39,14 @@ class Transaction extends Equatable {
         categoryName: data['categoryName'],
         amount: data['amount'],
         type: data['type'],
-        createdAt: data['createdAt'],
-        updatedAt: data['updatedAt'],
+        // createdAt: data['createdAt'],
+        // updatedAt: data['updatedAt'],
       );
 
   @override
   // TODO: implement props
   List<Object> get props => [
-        id ?? 0,
+        id ?? '',
         title ?? '',
         date ?? '',
         userId ?? 0,
@@ -56,7 +56,7 @@ class Transaction extends Equatable {
         categoryName ?? '',
         amount ?? 0,
         type ?? '',
-        createdAt ?? '',
-        updatedAt ?? '',
+        // createdAt ?? '',
+        // updatedAt ?? '',
       ];
 }

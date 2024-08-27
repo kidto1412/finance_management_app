@@ -39,7 +39,7 @@ class _TransactionPageState extends State<TransactionPage> {
     List<String> types = ['DEBIT', 'CREDIT'];
     List<Category> allCategories = categoryProvider.allCategories ?? [];
     List<Category> userCategories = categoryProvider.resultUserCategory ?? [];
-    List<Transaction>? transactions = transactionProvider.transaction ?? [];
+    List<Transaction>? transactions = transactionProvider.transactions ?? [];
 
     return SafeArea(
       child: Stack(
@@ -49,22 +49,31 @@ class _TransactionPageState extends State<TransactionPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  transactions.length == 0
-                      ? NotfoundCard()
-                      : ListView.builder(
-                          itemCount: transactions.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final Transaction transaction = transactions[index];
-                            return CardListBank(
-                              bankName: transaction.bankName,
-                              totalBalance: transaction.amount,
-                            );
-                          },
-                        ),
                   Container(
                     margin: EdgeInsets.all(10.0),
-                    child: Text('Setting your categories here'),
+                    child: Text('List Transaction'),
                   ),
+                  transactionProvider.loadTransaction == true
+                      ? Center(child: CircularProgressIndicator())
+                      : transactions.isEmpty
+                          ? NotfoundCard()
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: transactions.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final Transaction transaction =
+                                    transactions[index];
+                                return TransactionCard(
+                                  bankName: transaction.title,
+                                  totalBalance: transaction.amount,
+                                );
+                              },
+                            ),
+                  // Container(
+                  //   margin: EdgeInsets.all(10.0),
+                  //   child: Text('Setting your categories here'),
+                  // ),
                   SizedBox(
                     height: 10.0,
                   ),
@@ -353,6 +362,9 @@ class _TransactionPageState extends State<TransactionPage> {
                           if (transactionProvider
                                   .resultAddTrans!.value['code'] ==
                               '00') {
+                            Provider.of<TransactionProvider>(context,
+                                    listen: false)
+                                .GetTransactionUser(userId);
                             Get.snackbar('Success', 'Transaction success');
                           } else {
                             Get.snackbar(

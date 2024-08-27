@@ -33,11 +33,11 @@ class TransactionService {
     try {
       var response = await dio.get('transaction/userId/${userId}');
       if (response.data['code'] == '00') {
-        var data = response.data['data'];
-        print(data);
-        // List<Transaction> transactions =
+        // var data = response.data['data'];
+        // print(data);
+        // List<Transaction> transaction =
         //     (data as Iterable).map((e) => Transaction.fromJson(e)).toList();
-        // print(transactions);
+        // print('transaction ${transaction}');
         return ApiReturnValue(
             message: response.data['message'], value: response.data);
       } else {
