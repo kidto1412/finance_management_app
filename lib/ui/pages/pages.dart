@@ -1,4 +1,4 @@
-import 'dart:ffi';
+// import 'dart:ffi';
 
 import 'package:finance_management/constant/list_bank.dart';
 import 'package:finance_management/helper/curreny_formater.dart';
@@ -7,6 +7,7 @@ import 'package:finance_management/helper/validation.dart';
 import 'package:finance_management/models/models.dart';
 import 'package:finance_management/providers/bank_provider.dart';
 import 'package:finance_management/providers/category_provider.dart';
+import 'package:finance_management/providers/transaction_provider.dart';
 import 'package:finance_management/providers/user_provider.dart';
 import 'package:finance_management/services/services.dart';
 import 'package:finance_management/shared/shared.dart';
@@ -17,6 +18,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 // import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';

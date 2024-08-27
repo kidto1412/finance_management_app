@@ -17,9 +17,18 @@ class _HomePageState extends State<HomePage>
   late AnimationController _controller;
   late Animation<double> _animation;
   ListBank listBank = new ListBank();
+  String? currentDate;
+  int userId = localStorage.getItem("userId")!.toInt() ?? 0;
+  String? totalBalance;
   // String newBalance = unformatBalance(balance.text);
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<BankProvider>(context, listen: false).GetTotalBalance(userId);
+    });
+    setState(() {
+      currentDate = new DateTime.now().toString();
+    });
     super.initState();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -41,6 +50,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    final bankProvider = Provider.of<BankProvider>(context);
     List<String> banks = listBank.getListbank();
     String dropdownValue = banks.first;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -220,7 +230,7 @@ class _HomePageState extends State<HomePage>
                         ),
                         Container(
                           child: Text(
-                            'Friday 26 2024',
+                            '${currentDate}',
                             style: whiteTextStyle.copyWith(fontSize: 18.0),
                           ),
                         ),
@@ -332,9 +342,14 @@ class _HomePageState extends State<HomePage>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.money),
-                        Text('Hello', style: TextStyle(fontSize: 18)),
+                        Container(
+                            margin: EdgeInsets.only(left: 10.0),
+                            child: Text('Balance',
+                                style: TextStyle(fontSize: 18))),
                         Spacer(flex: 2),
-                        Text('50000', style: TextStyle(fontSize: 18)),
+                        Text(
+                            '${formatRupiah(bankProvider.totalBalance != null ? bankProvider.totalBalance!.toInt() : 0)}',
+                            style: TextStyle(fontSize: 18)),
                       ],
                     ),
                   ),

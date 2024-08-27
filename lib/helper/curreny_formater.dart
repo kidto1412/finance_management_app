@@ -9,7 +9,9 @@ final NumberFormat currencyFormatter = NumberFormat.currency(
 );
 String formatRupiah(int amount) {
   // Format the amount as Rupiah
-  return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ').format(amount);
+  return NumberFormat.currency(
+          locale: 'id_ID', symbol: 'Rp. ', decimalDigits: 0)
+      .format(amount);
 }
 
 class CurrencyInputFormatter extends TextInputFormatter {

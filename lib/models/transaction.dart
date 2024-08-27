@@ -2,36 +2,61 @@ part of 'models.dart';
 
 class Transaction extends Equatable {
   final int? id;
-  final String? name;
-  final String? username;
-  final String? email;
-  final String? password;
-
-  static String? token;
-
+  final String? title;
+  final String? date;
+  final int? userId;
+  final int? bankId;
+  final String? bankName;
+  final int? categoryId;
+  final String? categoryName;
+  final int? amount;
+  final String? type;
+  final String? createdAt;
+  final String? updatedAt;
   Transaction({
     this.id,
-    this.username,
-    this.name,
-    this.email,
-    this.password,
+    this.title,
+    this.date,
+    this.userId,
+    this.bankId,
+    this.bankName,
+    this.categoryId,
+    this.categoryName,
+    this.amount,
+    this.type,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> data) => Transaction(
         id: data['id'],
-        username: data['username'],
-        email: data['email'],
-        name: data['name'],
-        password: data['password'],
+        title: data['title'],
+        date: data['date'],
+        userId: data['userId'],
+        bankId: data['bankId'],
+        bankName: data['bankName'],
+        categoryId: data['categoryId'],
+        categoryName: data['categoryName'],
+        amount: data['amount'],
+        type: data['type'],
+        createdAt: data['createdAt'],
+        updatedAt: data['updatedAt'],
       );
 
   @override
   // TODO: implement props
   List<Object> get props => [
         id ?? 0,
-        username ?? '',
-        email ?? '',
-        name ?? '',
-        password ?? '',
+        title ?? '',
+        date ?? '',
+        userId ?? 0,
+        bankId ?? 0,
+        bankName ?? '',
+        categoryId ?? 0,
+        categoryName ?? '',
+        amount ?? 0,
+        type ?? '',
+        createdAt ?? '',
+        updatedAt ?? '',
       ];
 }

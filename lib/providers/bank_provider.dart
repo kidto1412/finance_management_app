@@ -18,7 +18,20 @@ class BankProvider extends ChangeNotifier {
 
   ApiReturnValue? _resultAdd;
   ApiReturnValue? get resultAdd => _resultAdd;
+
+  Map? _dataDetailBankUser;
+  Map? get dataDetailBankUser => _dataDetailBankUser;
+
   // int? get userId => _userId;
+
+  ApiReturnValue? _resultEdit;
+  ApiReturnValue? get resultEdit => _resultEdit;
+
+  ApiReturnValue? _resultDelete;
+  ApiReturnValue? get resultDelete => _resultDelete;
+
+  int? _totalBalance;
+  int? get totalBalance => _totalBalance;
 
   Future<void> addBankUser(int userId, int bankId, int totalBalance) async {
     _addUserBankLoading = true;
@@ -31,13 +44,38 @@ class BankProvider extends ChangeNotifier {
         _resultAdd = result;
         _addUserBankLoading = false;
       } else {
-        _resultAdd = result.value;
+        _resultAdd = result;
         _addUserBankLoading = false;
       }
 
       // _userId = result.value['data'];
     } catch (e) {
       _resultAdd = null;
+      _addUserBankLoading = false;
+    }
+    _addUserBankLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> editBankUser(
+      int userId, int bankId, int totalBalance, int currentBankId) async {
+    _addUserBankLoading = true;
+    notifyListeners();
+    try {
+      ApiReturnValue result = await BankService.editBankUser(
+          userId, bankId, totalBalance, currentBankId);
+      print('result ${result.value}');
+      if (result.value['code'] == "00") {
+        _resultEdit = result;
+        _addUserBankLoading = false;
+      } else {
+        _resultEdit = result.value;
+        _addUserBankLoading = false;
+      }
+
+      // _userId = result.value['data'];
+    } catch (e) {
+      _resultEdit = null;
       _addUserBankLoading = false;
     }
     _addUserBankLoading = false;
@@ -85,10 +123,56 @@ class BankProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Removes all items from the cart.
-  void login() {
+  Future<void> GetDetailUserBank(int userId, int bankId) async {
+    print(userId);
+    _isLoading = true;
+    notifyListeners();
+    try {
+      ApiReturnValue result =
+          await BankService.getDetailUserBank(userId, bankId);
+      print('result ${result.value}');
+      _dataDetailBankUser = result.value;
+      _isLoading = false;
+    } catch (e) {
+      _isLoading = false;
+      _dataDetailBankUser = {};
+      // _userId = null;
+    }
+    _isLoading = false;
     notifyListeners();
   }
 
-  void logout() {}
+  Future<void> DeleteBankUser(int userId, int bankId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      ApiReturnValue result = await BankService.deleteBankUser(userId, bankId);
+      print('result ${result.value}');
+      _resultDelete = result.value;
+      _isLoading = false;
+    } catch (e) {
+      _isLoading = false;
+      _resultDelete = null;
+      // _userId = null;
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> GetTotalBalance(int userId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      ApiReturnValue result = await BankService.GetTotalBalance(userId);
+      print('result ${result.value}');
+      _totalBalance = result.value['data'];
+      _isLoading = false;
+    } catch (e) {
+      _isLoading = false;
+      _totalBalance = null;
+      // _userId = null;
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
 }

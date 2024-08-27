@@ -16,7 +16,6 @@ class CardListBank extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(10.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,13 +24,21 @@ class CardListBank extends StatelessWidget {
                   Text(formattedBalance.toString()),
                 ],
               ),
+              Spacer(),
               IconButton(
                 onPressed: () {
-                  onTap;
+                  onTap!();
                 },
                 icon: Icon(Icons.edit_outlined),
-                color: primaryColor,
-              )
+                color: Colors.orange,
+              ),
+              IconButton(
+                onPressed: () {
+                  onTap!();
+                },
+                icon: Icon(Icons.delete),
+                color: Colors.red,
+              ),
             ],
           ),
         ),

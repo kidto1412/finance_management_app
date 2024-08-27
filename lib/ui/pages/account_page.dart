@@ -8,8 +8,8 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  final TextEditingController balance = TextEditingController();
-  final TextEditingController title = TextEditingController();
+  TextEditingController balance = TextEditingController();
+  TextEditingController title = TextEditingController();
   int? _selectedBankId;
   int userId = localStorage.getItem("userId")!.toInt() ?? 0;
 
@@ -46,6 +46,26 @@ class _AccountPageState extends State<AccountPage> {
                           return CardListBank(
                             bankName: bank.bankName,
                             totalBalance: bank.totalBalance,
+                            onTap: () {
+                              print(bank.bankId);
+                              print(bank.totalBalance);
+                              setState(() {
+                                _selectedBankId = bank.bankId;
+                                balance.text =
+                                    formatRupiah(bank.totalBalance!.toInt());
+                              });
+                              int? currentBankId = bank.bankId;
+                              _dialogBuilder(
+                                  context,
+                                  bankProvider,
+                                  banks,
+                                  userId,
+                                  _selectedBankId,
+                                  balance,
+                                  currentBankId,
+                                  validator,
+                                  'edit');
+                            },
                           );
                         },
                       ),
@@ -82,167 +102,16 @@ class _AccountPageState extends State<AccountPage> {
                                   );
                                 },
                               )
-                            : showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) => Dialog(
-                                  child: SingleChildScrollView(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Container(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text(
-                                                'Input Bank',
-                                                style: titleStyle,
-                                              )),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10.0),
-                                            child: Text(
-                                              'Bank',
-                                              style: labelStyle,
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.all(10.0),
-                                            child: DropdownButtonFormField<int>(
-                                              decoration: InputDecoration(
-                                                border: OutlineInputBorder(),
-                                              ),
-                                              hint: Text('Select Bank'),
-                                              value: _selectedBankId,
-                                              onChanged: (int? newValue) {
-                                                setState(() {
-                                                  _selectedBankId = newValue;
-                                                });
-                                                print(
-                                                    'Selected Bank ID: $newValue');
-                                              },
-                                              items: banks
-                                                  ?.map<DropdownMenuItem<int>>(
-                                                      (Bank bank) {
-                                                return DropdownMenuItem<int>(
-                                                  value: bank.bankId,
-                                                  child: Text(bank.bankName ??
-                                                      'Unknown Bank'),
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10.0),
-                                            child: Text(
-                                              'Balance',
-                                              style: labelStyle,
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.all(10.0),
-                                            child: TextFormField(
-                                              validator: (String? value) {
-                                                validator(value, '');
-                                              },
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly,
-                                                CurrencyInputFormatter(),
-                                              ],
-                                              controller: balance,
-                                              decoration: InputDecoration(
-                                                border: OutlineInputBorder(),
-                                                hintText: 'Balance',
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 15),
-                                          Container(
-                                              width: double.infinity,
-                                              margin: EdgeInsets.only(
-                                                  top: 18.0, bottom: 10.0),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.0),
-                                              height: 55.0,
-                                              child: ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5.0)),
-                                                    backgroundColor:
-                                                        Colors.green,
-                                                    textStyle:
-                                                        labelButtonStyle1),
-                                                onPressed: () async {
-                                                  late int? newBalance =
-                                                      unformatBalance(
-                                                              balance.text)
-                                                          .toInt();
-                                                  print(_selectedBankId);
-                                                  print(userId);
-                                                  print(newBalance);
-                                                  await Provider.of<
-                                                              BankProvider>(
-                                                          context,
-                                                          listen: false)
-                                                      .addBankUser(
-                                                          userId,
-                                                          _selectedBankId ?? 0,
-                                                          newBalance!);
-                                                  if (bankProvider.resultAdd!
-                                                          .value['code'] ==
-                                                      '00') {
-                                                    await Provider.of<
-                                                                BankProvider>(
-                                                            context,
-                                                            listen: false)
-                                                        .GetUserBank(userId);
-                                                    Get.snackbar('Success',
-                                                        'Add Success');
-                                                    Navigator.of(context).pop();
-                                                  } else if (bankProvider
-                                                          .resultAdd!
-                                                          .value['code'] ==
-                                                      '01') {
-                                                    Get.snackbar(
-                                                        'Failed',
-                                                        bankProvider.resultAdd!
-                                                            .value['message']);
-                                                  } else {
-                                                    Get.snackbar(
-                                                        'Failed',
-                                                        bankProvider
-                                                            .resultAdd!.message
-                                                            .toString());
-                                                  }
-                                                },
-                                                child: Text(
-                                                  'Add Data',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              )),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ).then((_) {
-                                setState(() {
-                                  // Reset the selected bank ID after the dialog closes if needed
-                                });
-                              });
+                            : _dialogBuilder(
+                                context,
+                                bankProvider,
+                                banks,
+                                userId,
+                                _selectedBankId,
+                                balance,
+                                null,
+                                validator,
+                                'add');
                       },
                       style: ElevatedButton.styleFrom(
                         shape: CircleBorder(),
@@ -256,5 +125,164 @@ class _AccountPageState extends State<AccountPage> {
         ],
       ),
     );
+  }
+
+  Future<void> _dialogBuilder(
+      BuildContext context,
+      BankProvider bankProvider,
+      List<Bank>? banks,
+      int userId,
+      int? _selectedBankId,
+      TextEditingController balance,
+      int? currentBankId,
+      Function validator,
+      String action) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Input Bank',
+                      style: titleStyle,
+                    )),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    'Bank',
+                    style: labelStyle,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: DropdownButtonFormField<int>(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    hint: Text('Select Bank'),
+                    value: _selectedBankId,
+                    onChanged: (int? newValue) {
+                      setState(() {
+                        _selectedBankId = newValue;
+                      });
+                      print('Selected Bank ID: $newValue');
+                    },
+                    items: banks?.map<DropdownMenuItem<int>>((Bank bank) {
+                      return DropdownMenuItem<int>(
+                        value: bank.bankId,
+                        child: Text(bank.bankName ?? 'Unknown Bank'),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    'Balance',
+                    style: labelStyle,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    validator: (String? value) {
+                      validator(value, '');
+                    },
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      CurrencyInputFormatter(),
+                    ],
+                    controller: balance,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Balance',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.only(top: 18.0, bottom: 10.0),
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    height: 55.0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0)),
+                          backgroundColor: Colors.green,
+                          textStyle: labelButtonStyle1),
+                      onPressed: () async {
+                        if (action == 'add') {
+                          late int? newBalance =
+                              unformatBalance(balance.text).toInt();
+
+                          await Provider.of<BankProvider>(context,
+                                  listen: false)
+                              .addBankUser(
+                                  userId, _selectedBankId ?? 0, newBalance!);
+                          if (bankProvider.resultAdd!.value['code'] == '00') {
+                            await Provider.of<BankProvider>(context,
+                                    listen: false)
+                                .GetUserBank(userId);
+                            Get.snackbar('Success', 'Add Success');
+                            Navigator.of(context).pop();
+                          } else if (bankProvider.resultAdd!.value['code'] ==
+                              '01') {
+                            Get.snackbar('Failed',
+                                bankProvider.resultAdd!.value['message']);
+                          } else {
+                            Get.snackbar('Failed',
+                                bankProvider.resultAdd!.message.toString());
+                          }
+                        } else {
+                          late int? newBalance =
+                              unformatBalance(balance.text).toInt();
+
+                          await Provider.of<BankProvider>(context,
+                                  listen: false)
+                              .editBankUser(userId, _selectedBankId ?? 0,
+                                  newBalance!, currentBankId!);
+                          if (bankProvider.resultEdit!.value['code'] == '00') {
+                            await Provider.of<BankProvider>(context,
+                                    listen: false)
+                                .GetUserBank(userId);
+                            Get.snackbar('Success', 'Add Success');
+                            Navigator.of(context).pop();
+                          } else if (bankProvider.resultEdit!.value['code'] ==
+                              '01') {
+                            Get.snackbar('Failed',
+                                bankProvider.resultEdit!.value['message']);
+                          } else {
+                            Get.snackbar('Failed',
+                                bankProvider.resultAdd!.message.toString());
+                          }
+                        }
+                      },
+                      child: Text(
+                        'Add Data',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ).then((_) {
+      setState(() {
+        // Reset the selected bank ID after the dialog closes if needed
+      });
+    });
   }
 }
